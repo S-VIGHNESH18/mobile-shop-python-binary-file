@@ -1,0 +1,98 @@
+import pickle
+import os
+def addmo():
+    n=int(input("enter the no of phone to be inputed:"))
+    for i in range(n):
+        brand=input("enter the name of brand:")
+        mobilename=input("enter the name of mobile:")
+        price=int(input("enter the price:"))
+        bcty=int(input("enter the capacity in mAh:"))
+        processor=input("enter the processor name:")
+        software=input("enter the software name:")
+        m={'Brand':brand,'Mobilename':mobilename,'Processor':processor,"Price":price,"Battery":bcty,"Software":software}
+        with open("mobi.dat",'ab')as f:
+            pickle.dump(m,f)
+
+
+def displayshop():
+    with open("mobi.dat",'rb')as f1:
+        try:
+            while True:
+                m=pickle.load(f1)
+                print('Brand :',m['Brand'])
+                print('Mobilename :',m['Mobilename'])
+                print('Processor :',m['Processor'])
+                print("Battery :",m["Battery"])
+                print("Price :",m["Price"])
+                print("Software :",m["Software"])
+        except EOFError:
+            pass
+flag=False
+def searchmobile():
+    with open("mobi.dat","rb")as f:
+        name=input("enter the mobile name:")
+        try:
+            while True:
+                m=pickle.load(f)
+                if m['Mobilename']==name:
+                    print(m)
+                    flag=True
+        except EOFError:
+            pass
+        finally:
+            if flag==False:
+                print("record not found")
+
+def updatemobile():
+    x=int(input("enter the percentage  deduction:"))
+    BRAND=input("enter the brand:")
+    try:
+        with open("mobi.dat","rb")as f:
+            with open("temp.dat","wb")as f1:
+                while True:
+
+                        m=pickle.load(f)
+                        if m['Brand']==BRAND:
+                            m["Price"]=m["Price"]-m["Price"]*x/100
+                        pickle.dump(m,f1)
+    except EOFError:
+            pass
+    finally:
+            os.remove("mobi.dat")
+            os.rename("temp.dat","mobi.dat")
+def removemobile():
+    hi=input("enter the mobile name:")
+    try:
+        with open("mobi.dat","rb")as f:
+            with open("temp.dat","wb")as f1:
+                while True:
+                    m=pickle.load(f)
+                    if str(m['Mobilename'])!=hi:
+                        pickle.dump(m,f1)
+    except EOFError:
+        pass
+    finally:
+        os.remove("mobi.dat")
+        os.rename("temp.dat","mobi.dat")
+
+print(" ---- MENU ----")
+print(" |-- 1. ADD MOBILE --| ")
+print(" |-- 2.DISPLAY ITEMS --| ")
+print(" |-- 3.SEARCH BRAND --| ")
+print(" |-- 4.UPDATE PRICE --| ")
+print(" |-- 5.REMOVE --| ")
+print(" |-- 6.EXIT --| ")
+while True:
+    ch=int(input("enter your choice : "))
+    if ch==1:
+        addmo()
+    elif ch==2:
+        displayshop()
+    elif ch==3:
+        searchmobile()
+    elif ch==4:
+        updatemobile()
+    elif ch==5:
+        removemobile()
+    elif ch==6:
+        break
